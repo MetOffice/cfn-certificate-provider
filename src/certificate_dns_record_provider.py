@@ -7,7 +7,7 @@ from cfn_resource_provider import ResourceProvider
 
 logger = logging.getLogger()
 
-acm = boto3.client('acm')
+#acm = boto3.client('acm')
 lmbda = boto3.client('lambda')
 
 
@@ -33,6 +33,8 @@ class CertificateDNSRecordProvider(ResourceProvider):
     @property
     def certificate(self):
         result = None
+        region = self.certificate_arn.split(':')[3]
+        acm = boto3.client('acm', region_name=region)
         try:
             response = acm.describe_certificate(CertificateArn=self.certificate_arn)
             result = Certificate(response["Certificate"])
